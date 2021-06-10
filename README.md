@@ -15,7 +15,7 @@
 1. 安装Java环境，推荐：jdk1.8
 2. 安装Mysql并启动，推荐：8
 3. 创建数据库执行mtest.sql文件
-4. 部署MTest.jar用例管理系统-后端）：数据库连接默认账号密码root|password，默认端口8084；如需更改配置，可打开jar包里面applicantContent.xml进行修改
+4. 部署MTest.jar用例管理系统-后端）：数据库连接默认账号密码root|password，默认端口8084；如需更改配置，可打开jar包里面application.yml进行修改
 5. 部署MTest_front（用例管理系统-前端）：后端默认请求本地端口8084，如需更改后端域名，修改src/utils/request.js的baseUrl，并重新打包部署
 
 链接: https://pan.baidu.com/s/1yLKSIaaSx3G_UCLeQIUuXA  密码: g3f4

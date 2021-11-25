@@ -1,10 +1,6 @@
-/**
- * @description 用例库-导入文件
- * @author 371683941@qq.com
- * @date 2021/5/10
- */
 package com.shirleydl.mtest.controller;
 
+import com.shirleydl.mtest.entity.TestCase;
 import com.shirleydl.mtest.method.CheckFileUtil;
 import com.shirleydl.mtest.method.ExcelUtils;
 import com.shirleydl.mtest.method.XMindUtils;
@@ -21,9 +17,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * 用例库-导入
+ */
 @RestController
 @RequestMapping("/caseLibrary")
-public class UploadController {
+public class CaseLibraryImportController {
     @Autowired
     private ISystemsService systemsService;
     @Autowired
@@ -34,9 +33,12 @@ public class UploadController {
     private ITestPointService testPointService;
     @Autowired
     private ITestContentService testContentService;
+    @Autowired
+    private ITestCaseService testCaseService;
 
     /**
-     * 导入文件
+     * 上传文件导入
+     *
      * @param file
      * @return
      */
@@ -106,6 +108,67 @@ public class UploadController {
             return ResponseVO.failure("导入失败");
         }
 
+    }
+
+
+    /**
+     * 用例入库导入
+     *
+     * @param demandId
+     * @return
+     */
+    @PostMapping("/importByTestCase")
+    public ResponseVO importByTestCase(@RequestParam("demandId") int demandId) {
+        List<TestCase> testCaseList = testCaseService.queryTestCase(demandId);
+        Map<String, Integer> systemsMap = new HashMap<>();
+        Map<String, Integer> pageModulesMap = new HashMap<>();
+        Map<String, Integer> functionsMap = new HashMap<>();
+        Map<String, Integer> testPointMap = new HashMap<>();
+        Set<String> content = new HashSet<>();
+        int systemsId;
+        int pageModulesId;
+        int functionsId;
+        int testPointId;
+        for (TestCase testCase : testCaseList) {
+            if ("".equals(testCase.getSystemsName())||"".equals(testCase.getPageModulesName())||"".equals(testCase.getFunctionsName())||"".equals(testCase.getTestPointName())){
+                continue;
+            }
+            if (systemsMap.containsKey(testCase.getSystemsName())) {
+                systemsId = systemsMap.get(testCase.getSystemsName());
+            } else {
+                systemsId = systemsService.addOrFindSystems(testCase.getSystemsName());
+                systemsMap.put(testCase.getSystemsName(), systemsId);
+            }
+            if (pageModulesMap.containsKey(systemsId + testCase.getPageModulesName())) {
+                pageModulesId = pageModulesMap.get(systemsId + testCase.getPageModulesName());
+            } else {
+                pageModulesId = pageModulesService.addOrFindPageModules(testCase.getPageModulesName(), systemsId);
+                pageModulesMap.put(systemsId + testCase.getPageModulesName(), pageModulesId);
+            }
+            if (functionsMap.containsKey(pageModulesId + testCase.getFunctionsName())) {
+                functionsId = functionsMap.get(pageModulesId + testCase.getFunctionsName());
+            } else {
+                functionsId = functionsService.addOrFindFunctions(testCase.getFunctionsName(), pageModulesId);
+                functionsMap.put(pageModulesId + testCase.getFunctionsName(), functionsId);
+            }
+            if (testPointMap.containsKey(functionsId + testCase.getTestPointName())) {
+                testPointId = testPointMap.get(functionsId + testCase.getTestPointName());
+            } else {
+                testPointId = testPointService.addOrFindTestPoint(testCase.getTestPointName(), functionsId);
+                functionsMap.put(functionsId + testCase.getTestPointName(), testPointId);
+            }
+            if (!content.contains(testPointId + testCase.getPre() + testCase.getStep())) {
+                testContentService.addOrFindTestContent(testCase.getPre(), testCase.getStep(), testCase.getExpect(), testPointId);
+                content.add(testPointId + testCase.getPre() + testCase.getStep());
+            }
+
+//                System.out.print(exportInfo.getSystemsName() + " ");
+//                System.out.print(exportInfo.getPageModulesName() + " ");
+//                System.out.print(exportInfo.getFunctionsName() + " ");
+//                System.out.print(exportInfo.getTestPointName() + " ");
+//                System.out.println("");
+        }
+        return ResponseVO.success("导入成功");
     }
 
 }

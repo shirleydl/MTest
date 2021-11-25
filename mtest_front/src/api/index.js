@@ -233,6 +233,14 @@ export const fetchDemandFileData = query => {
 };
 
 
+export const importCaseLibrary = query => {
+    return request({
+        url: '/caseLibrary/importByTestCase',
+        method: 'post',
+        params: query
+    });
+};
+
 export const exportExcelUrl = baseUrl+'/testCase/exportExcel';
 
 export const uploadUrl = baseUrl+'/caseLibrary/upload';

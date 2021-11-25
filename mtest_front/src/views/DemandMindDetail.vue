@@ -18,6 +18,7 @@
         <el-button type="primary" size="mini" @click="download">下载文件</el-button>
     </div>
     <div style="float: right;">
+        Tip：右键可移动显示
         <el-button type="primary" size="mini" @click="big">放大</el-button>
         <el-button type="primary" size="mini" @click="small">缩小</el-button>
     </div>

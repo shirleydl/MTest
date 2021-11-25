@@ -19,7 +19,7 @@
                 <div style="float: left;" class="handle-box">
                     <el-button type="primary" @click="exportExcel" size="mini">导出EXCEL</el-button>
                     <el-button type="primary" @click="onSubmit" size="mini">用例库导入</el-button>
-                    <el-button type="primary" @click="onSubmit" size="mini">用例入库</el-button>
+                    <el-button type="primary" @click="importCaseLibrary" size="mini">用例入库</el-button>
                 </div>
                 <div v-if="isEdit === -1" style="float: right;" class="handle-box">
                     <el-button type="primary" @click="editBatch" size="mini">批量编辑</el-button>
@@ -109,13 +109,14 @@ import { deleteTestCaseDataByDemandId } from "../api/index";
 import { deleteBatchTestCaseData } from "../api/index";
 import { exportFileToTestCaseUrl } from "../api/index";
 import { exportExcelUrl } from "../api/index";
+import { importCaseLibrary } from "../api/index";
 
 export default {
     name: "demandDetail",
-    watch:{
-     $route(to,from){
-     this.$router.go(0)
-     }
+    watch: {
+        $route(to, from) {
+            this.$router.go(0)
+        }
     },
     data() {
         return {
@@ -317,10 +318,21 @@ export default {
 
         },
         exportExcel() {
-           window.location.href = exportExcelUrl+"?demandId="+this.demandId;
+            window.location.href = exportExcelUrl + "?demandId=" + this.demandId;
         },
-        onSubmit(){
-        this.$message.error("唉，功能还没做，别急");
+        importCaseLibrary() {
+            let data = { demandId: this.demandId };
+            importCaseLibrary(data).then(res => {
+                if (res.code === 200) {
+                    this.$message.success(res.message);
+                } else {
+                    this.$message.error(res.message);
+                }
+
+            });
+        },
+        onSubmit() {
+            this.$message.error("唉，功能还没做，别急");
         }
 
     }

@@ -13,7 +13,7 @@
     "element-plus": "1.0.2-beta.33",
     "kity": "^2.0.4",
     "kityminder-core": "^1.4.50",
-    "vue": "~3.0.7",
+    "vue": "^3.0.7",
     "vue-cropperjs": "^5.0.0",
     "vue-i18n": "^9.0.0",
     "vue-json-excel": "^0.3.0",
